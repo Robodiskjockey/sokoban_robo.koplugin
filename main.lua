@@ -9,6 +9,7 @@ local HorizontalGroup = require("ui/widget/horizontalgroup")
 local HorizontalSpan  = require("ui/widget/horizontalspan")
 local InputContainer  = require("ui/widget/container/inputcontainer")
 local LuaSettings     = require("luasettings")
+local Notification    = require("ui/widget/notification")
 local Size            = require("ui/size")
 local TextWidget      = require("ui/widget/textwidget")
 local TitleBar        = require("ui/widget/titlebar")
@@ -117,6 +118,8 @@ function Sokoban:startLevel(set_idx, level_num)
     self:_saveSettings()
 
     self.game = Game.from_xsb(ls.levels[level_num])
+    self._selected_box = nil
+    self._animating = false
 
     if self.widget then
         UIManager:close(self.widget)
@@ -158,6 +161,9 @@ function Sokoban:_buildWidget()
         icon_dir    = self.path .. "/tiles",
         on_swipe_cb = function(dr, dc)
             self:_onMove(dr, dc)
+        end,
+        on_tap_cb = function(r, c)
+            self:_onTap(r, c)
         end,
     }
     self._board = board
@@ -257,6 +263,72 @@ function Sokoban:_onMove(dr, dc)
             end)
         end
     end
+end
+
+function Sokoban:_onTap(r, c)
+    if self._animating then return end
+    local cell = self.game.grid[r][c]
+    local is_box = (cell == Game.BOX or cell == Game.BOX_ON)
+
+    if self._selected_box then
+        local sb = self._selected_box
+        self._selected_box = nil
+        self._board.selected_box = nil
+
+        if sb.r == r and sb.c == c then
+            self:_refresh()
+            return
+        end
+        if is_box then
+            self._selected_box = { r = r, c = c }
+            self._board.selected_box = { r, c }
+            self:_refresh()
+            return
+        end
+
+        local path = self.game:find_push_path(sb.r, sb.c, r, c)
+        self:_refresh()
+        if path then
+            self:_animatePath(path)
+        else
+            Notification:notify(_("Can't push there"), Notification.SOURCE_ALWAYS_SHOW)
+        end
+        return
+    end
+
+    if is_box then
+        self._selected_box = { r = r, c = c }
+        self._board.selected_box = { r, c }
+        self:_refresh()
+        return
+    end
+
+    local path = self.game:find_walk_path(r, c)
+    if path then
+        self:_animatePath(path)
+    else
+        Notification:notify(_("Can't go there"), Notification.SOURCE_ALWAYS_SHOW)
+    end
+end
+
+function Sokoban:_animatePath(path, idx)
+    idx = idx or 1
+    if idx > #path then
+        self._animating = false
+        if self.game:is_solved() then
+            UIManager:scheduleIn(0.1, function()
+                self:_onSolved()
+            end)
+        end
+        return
+    end
+    self._animating = true
+    local step = path[idx]
+    self.game:move(step[1], step[2])
+    self:_refresh()
+    UIManager:scheduleIn(0.08, function()
+        self:_animatePath(path, idx + 1)
+    end)
 end
 
 function Sokoban:_refresh()

@@ -1,3 +1,4 @@
+local Blitbuffer = require("ffi/blitbuffer")
 local Device    = require("device")
 local Geom      = require("ui/geometry")
 local ImageWidget = require("ui/widget/imagewidget")
@@ -25,7 +26,9 @@ local Board = InputContainer:extend{
     height        = nil,
     icon_dir      = nil,
     on_swipe_cb   = nil, -- called with (dr, dc) before move, for main.lua to react
+    on_tap_cb     = nil, -- called with (r, c) grid coords on tap, for main.lua to react
     player_sprite = "player",
+    selected_box  = nil, -- {r, c} of a box selected for pushing, or nil
 }
 
 function Board:init()
@@ -52,6 +55,12 @@ function Board:init()
             ges = "swipe",
             screen_zone = { ratio_x = 0, ratio_y = 0, ratio_w = 1, ratio_h = 1 },
             handler = function(ges) return self:onSwipe(ges) end,
+        },
+        {
+            id = "sokoban_tap",
+            ges = "tap",
+            screen_zone = { ratio_x = 0, ratio_y = 0, ratio_w = 1, ratio_h = 1 },
+            handler = function(ges) return self:onTap(ges) end,
         },
     })
 end
@@ -94,6 +103,9 @@ function Board:paintTo(bb, x, y)
                 local sprite = (icon_name == "player") and self.player_sprite or icon_name
                 self:_getImage(sprite):paintTo(bb, px, py)
             end
+            if self.selected_box and self.selected_box[1] == r and self.selected_box[2] == c then
+                bb:paintBorder(px, py, cs, cs, Screen:scaleBySize(3), Blitbuffer.COLOR_BLACK)
+            end
         end
     end
 end
@@ -114,6 +126,19 @@ function Board:onSwipe(ges)
 
     if self.on_swipe_cb then
         self.on_swipe_cb(dr, dc)
+    end
+    return true
+end
+
+function Board:onTap(ges)
+    local x = ges.pos.x - self.dimen.x - self.offset_x
+    local y = ges.pos.y - self.dimen.y - self.offset_y
+    local c = math.floor(x / self.cell_size) + 1
+    local r = math.floor(y / self.cell_size) + 1
+    if r < 1 or r > self.game.rows or c < 1 or c > self.game.cols then return false end
+
+    if self.on_tap_cb then
+        self.on_tap_cb(r, c)
     end
     return true
 end
