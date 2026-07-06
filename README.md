@@ -26,15 +26,19 @@ Comes with the following level sets:
 
 | Action | Gesture |
 |--------|---------|
-| Move player | Swipe in any direction |
-| Undo last move | Tap the < button in the toolbar |
-| Restart level  | Tap the *Refresh* button |
-| Open level select | Tap the ⚙ button in the toolbar or title bar |
+| Move player | Swipe in any direction or direction keys (keyboard) |
+| Fast move | Tap an empty square |
+| Fast push | Tap a crate, then an empty square |
+| Undo last move | Tap the < button in the toolbar or Ctrl-Z |
+| Restart level  | Tap the *Refresh* button or Ctrl-R |
+| Open level select | Tap the ⚙ button in the title bar or Ctrl-O |
 | Quit | Tap the ✕ in the title bar |
 
 Push all boxes onto the target squares to solve the level. Boxes can only be pushed, never pulled, and only one box can be pushed at a time. 
 
 The main challenge is planning moves correctly to avoid causing a deadlock, a situation where a box or the player becomes permanently trapped, making the puzzle unsolvable.
+
+*Fast move* and *fast push* will speed up playing on touch screens especially on touchscreens. They work only if the move is possible without pushing other boxes.
 
 The move and push counts are shown in the toolbar. After solving, you can proceed to the next level or return to the menu.
 

@@ -165,6 +165,15 @@ function Sokoban:_buildWidget()
         on_tap_cb = function(r, c)
             self:_onTap(r, c)
         end,
+        on_open_cb = function()
+            self:openSettings()
+        end,
+        on_restart_cb = function()
+            self:_onRestart()
+        end,
+        on_undo_cb = function()
+            self:_onUndo()
+        end,
     }
     self._board = board
     self._title_bar = title_bar
@@ -174,11 +183,7 @@ function Sokoban:_buildWidget()
         icon     = "chevron.left",
         width    = icon_size,
         height   = icon_size,
-        callback = function()
-            if game:undo() then
-                self:_refresh()
-            end
-        end,
+        callback = function() self:_onUndo() end,
     }
     local restart_btn = IconButton:new{
         icon     = "cre.render.reload",
@@ -377,6 +382,12 @@ function Sokoban:_onSolved()
             self:openSettings()
         end,
     })
+end
+
+function Sokoban:_onUndo()
+    if self.game:undo() then
+        self:_refresh()
+    end
 end
 
 function Sokoban:_onRestart()

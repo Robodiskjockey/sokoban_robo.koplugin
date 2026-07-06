@@ -27,6 +27,9 @@ local Board = InputContainer:extend{
     icon_dir      = nil,
     on_swipe_cb   = nil, -- called with (dr, dc) before move, for main.lua to react
     on_tap_cb     = nil, -- called with (r, c) grid coords on tap, for main.lua to react
+    on_open_cb    = nil, -- called on Ctrl+O, for main.lua to react
+    on_restart_cb = nil, -- called on Ctrl+R, for main.lua to react
+    on_undo_cb    = nil, -- called on Ctrl+Z, for main.lua to react
     player_sprite = "player",
     selected_box  = nil, -- {r, c} of a box selected for pushing, or nil
 }
@@ -63,6 +66,17 @@ function Board:init()
             handler = function(ges) return self:onTap(ges) end,
         },
     })
+
+    self.key_events.MoveUp    = { { "Up" } }
+    self.key_events.MoveDown  = { { "Down" } }
+    self.key_events.MoveLeft  = { { "Left" } }
+    self.key_events.MoveRight = { { "Right" } }
+
+    if Device:hasKeyboard() then
+        self.key_events.OpenLevel = { { "Ctrl", "O" } }
+        self.key_events.Restart   = { { "Ctrl", "R" } }
+        self.key_events.Undo      = { { "Ctrl", "Z" } }
+    end
 end
 
 function Board:_getImage(icon_name)
@@ -114,19 +128,41 @@ function Board:getSize()
     return self.dimen
 end
 
-function Board:onSwipe(ges)
-    local dir = ges.direction
-    local dr, dc = 0, 0
-    if     dir == "east"  then dc =  1; self.player_sprite = "player_right"
-    elseif dir == "west"  then dc = -1; self.player_sprite = "player_left"
-    elseif dir == "south" then dr =  1; self.player_sprite = "player"
-    elseif dir == "north" then dr = -1; self.player_sprite = "player_up"
-    else return false
-    end
-
+function Board:_move(dr, dc, sprite)
+    self.player_sprite = sprite
     if self.on_swipe_cb then
         self.on_swipe_cb(dr, dc)
     end
+    return true
+end
+
+function Board:onSwipe(ges)
+    local dir = ges.direction
+    if     dir == "east"  then return self:_move( 0,  1, "player_right")
+    elseif dir == "west"  then return self:_move( 0, -1, "player_left")
+    elseif dir == "south" then return self:_move( 1,  0, "player")
+    elseif dir == "north" then return self:_move(-1,  0, "player_up")
+    end
+    return false
+end
+
+function Board:onMoveUp()    return self:_move(-1,  0, "player_up") end
+function Board:onMoveDown()  return self:_move( 1,  0, "player") end
+function Board:onMoveLeft()  return self:_move( 0, -1, "player_left") end
+function Board:onMoveRight() return self:_move( 0,  1, "player_right") end
+
+function Board:onOpenLevel()
+    if self.on_open_cb then self.on_open_cb() end
+    return true
+end
+
+function Board:onRestart()
+    if self.on_restart_cb then self.on_restart_cb() end
+    return true
+end
+
+function Board:onUndo()
+    if self.on_undo_cb then self.on_undo_cb() end
     return true
 end
 
