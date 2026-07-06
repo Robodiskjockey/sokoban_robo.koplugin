@@ -294,7 +294,7 @@ function Sokoban:_onTap(r, c)
         local path = self.game:find_push_path(sb.r, sb.c, r, c)
         self:_refresh()
         if path then
-            self:_animatePath(path)
+            self:_previewMove(path, self:_traceBoxPath(sb.r, sb.c, path))
         else
             Notification:notify(_("Can't push there"), Notification.SOURCE_ALWAYS_SHOW)
         end
@@ -310,29 +310,61 @@ function Sokoban:_onTap(r, c)
 
     local path = self.game:find_walk_path(r, c)
     if path then
-        self:_animatePath(path)
+        self:_previewMove(path, self:_traceWalkPath(path))
     else
         Notification:notify(_("Can't go there"), Notification.SOURCE_ALWAYS_SHOW)
     end
 end
 
-function Sokoban:_animatePath(path, idx)
-    idx = idx or 1
-    if idx > #path then
+-- Cell-by-cell trajectory of the player for a walk path (list of {dr,dc} steps).
+function Sokoban:_traceWalkPath(path)
+    local pr, pc = self.game.player_r, self.game.player_c
+    local cells = { { pr, pc } }
+    for _, step in ipairs(path) do
+        pr, pc = pr + step[1], pc + step[2]
+        table.insert(cells, { pr, pc })
+    end
+    return cells
+end
+
+-- Cell-by-cell trajectory of the pushed box for a push path (list of {dr,dc}
+-- player-move steps, some of which push the box). Mirrors Game:move's own
+-- push detection without mutating game state.
+function Sokoban:_traceBoxPath(box_r, box_c, path)
+    local pr, pc = self.game.player_r, self.game.player_c
+    local br, bc = box_r, box_c
+    local cells = { { br, bc } }
+    for _, step in ipairs(path) do
+        local npr, npc = pr + step[1], pc + step[2]
+        if npr == br and npc == bc then
+            br, bc = br + step[1], bc + step[2]
+            table.insert(cells, { br, bc })
+        end
+        pr, pc = npr, npc
+    end
+    return cells
+end
+
+-- Shows a straight preview line along `cells` for a second, then applies all
+-- of `path`'s moves at once and does a single clean refresh.
+function Sokoban:_previewMove(path, cells)
+    self._animating = true
+    self._board.path_preview = cells
+    self:_refresh()
+    UIManager:forceRePaint() -- show the line now, instead of it being merged away by the next setDirty
+    UIManager:scheduleIn(1, function()
+        self._board.path_preview = nil
+        for _, step in ipairs(path) do
+            self.game:move(step[1], step[2])
+        end
         self._animating = false
+        self:_refresh()
+        UIManager:forceRePaint()
         if self.game:is_solved() then
             UIManager:scheduleIn(0.1, function()
                 self:_onSolved()
             end)
         end
-        return
-    end
-    self._animating = true
-    local step = path[idx]
-    self.game:move(step[1], step[2])
-    self:_refresh()
-    UIManager:scheduleIn(0.08, function()
-        self:_animatePath(path, idx + 1)
     end)
 end
 

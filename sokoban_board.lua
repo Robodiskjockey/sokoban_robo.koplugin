@@ -32,6 +32,7 @@ local Board = InputContainer:extend{
     on_undo_cb    = nil, -- called on Ctrl+Z, for main.lua to react
     player_sprite = "player",
     selected_box  = nil, -- {r, c} of a box selected for pushing, or nil
+    path_preview  = nil, -- list of {r, c} cells to draw as a path preview line, or nil
 }
 
 function Board:init()
@@ -119,6 +120,24 @@ function Board:paintTo(bb, x, y)
             end
             if self.selected_box and self.selected_box[1] == r and self.selected_box[2] == c then
                 bb:paintBorder(px, py, cs, cs, Screen:scaleBySize(3), Blitbuffer.COLOR_BLACK)
+            end
+        end
+    end
+
+    if self.path_preview and #self.path_preview > 1 then
+        local thickness = Screen:scaleBySize(6)
+        local half = math.floor(thickness / 2)
+        for i = 1, #self.path_preview - 1 do
+            local r1, c1 = self.path_preview[i][1], self.path_preview[i][2]
+            local r2, c2 = self.path_preview[i + 1][1], self.path_preview[i + 1][2]
+            local cx1 = math.floor(ox + (c1 - 1) * cs + cs / 2)
+            local cy1 = math.floor(oy + (r1 - 1) * cs + cs / 2)
+            local cx2 = math.floor(ox + (c2 - 1) * cs + cs / 2)
+            local cy2 = math.floor(oy + (r2 - 1) * cs + cs / 2)
+            if r1 == r2 then
+                bb:paintRect(math.min(cx1, cx2), cy1 - half, math.abs(cx2 - cx1), thickness, Blitbuffer.COLOR_BLACK)
+            else
+                bb:paintRect(cx1 - half, math.min(cy1, cy2), thickness, math.abs(cy2 - cy1), Blitbuffer.COLOR_BLACK)
             end
         end
     end
