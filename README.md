@@ -1,6 +1,10 @@
-# sokoban.koplugin
+# sokoban_robo.koplugin
 
-A port of the Sokoban puzzle game (from 1981) for [KOReader](https://github.com/koreader/koreader). 
+A port of the Sokoban puzzle game (from 1981) for [KOReader](https://github.com/koreader/koreader).
+
+## Sokoban_robo.koplugin
+3 new level sets,
+30+ new levels.
 
 Comes with the following level sets:
 
@@ -10,7 +14,10 @@ Comes with the following level sets:
 - **Microcosmos** (36 levels) by Aymeric du Peloux ([link](http://www.sneezingtiger.com/sokoban/levelpics/microcosmosImages.html))
 - **Minicosmos** (40 levels) by Aymeric du Peloux ([link](http://www.sneezingtiger.com/sokoban/levels/microcosmosText.html))
 
-**WARNING!** Extremely addictive!
+### New Level Sets
+- **Ultra Worlds** (36 levels) by Robodiskjockey.
+- **Depreciated** (6 levels) by Robodiskjockey. These are broken levels that are cool so I kept them in "Depreciated"
+- **Geo** (4 levels) by Thegeode.
 
 ![Screenshot](sokoban_screenshot.png)
 
