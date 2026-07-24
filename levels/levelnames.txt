@@ -1,0 +1,13 @@
+Level names:
+
+☐
+
+
+
+World 1: (#1 - #)
+#1 - First Steps
+#2 - Clones
+#3 - Showing off
+#4 - Maze
+#5 - Hard
+#6 - Pain Tortue Path
