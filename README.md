@@ -22,12 +22,15 @@ Comes with the following level sets:
 ![Screenshot](sokoban_screenshot.png)
 
 ## Installation
-
-1. Copy the `sokoban.koplugin` directory into your device's KOReader plugins folder (typically `koreader/plugins`)
-
-2. Restart KOReader or reload plugins from the settings menu.
-
-3. Open the **Tools** menu → **Sokoban**.
+1. Download the .zip
+2. Extract the .zip, it should come out as a folder
+3. Move the entire newly-extracted folder into '.adds/plugins'. The exact folder can vary from some instances:
+ - **Kobo: .adds/koreader/plugins/
+ - **Kindle: koreader/plugins/
+ - **PocketBook: applications/koreader/plugins/
+ - **Android: koreader/plugins/
+ - **macOS: ~/Library/Application Support/koreader/plugins/
+5. Restart the koreader, and if everything goes right you should be able to play the game.
 
 ## Playing
 
@@ -81,15 +84,15 @@ return M
 
 Levels use the standard [XSB format](http://www.sokobano.de/wiki/index.php?title=Level_format):
 
-| Character | Meaning |
-|-----------|---------|
-| `#` | Wall |
-| ` ` | Floor |
-| `.` | Target |
-| `@` | Player |
-| `+` | Player on target |
-| `$` | Box |
-| `*` | Box on target |
+| Character | Meaning | What they do |
+|-----------|---------|--------------|
+| `#` | Wall | You can not walk through walls |
+| ` ` | Floor | What you walk on |
+| `.` | Target | The square-shaped box on the ground which acts as the goal and where you need to get the box to. |
+| `@` | Player | You play as the player |
+| `+` | Player on target | Acts as the player standing on the target. |
+| `$` | Box | You push the boxes. Only one at a time and you can only push them. If a box is on a target, it turns black. |
+| `*` | Box on target | If a box is on a target, it turns black. That's where it is meant to go |
 
 After creating the file, register it in `main.lua`:
 
@@ -114,6 +117,8 @@ python3 levels/convert.py levels/MySet.txt --author "Author Name"
 
 - Original game by **Hiroyuki Imabayashi** (Thinking Rabbit)
 - **Microban** and **Sasquatch** level sets by David W. Skinner - public domain
+- **Ultra Worlds** and **Depreciated** level sets by Robodiskjockey (Creator of this plugin fork)
 - **Microcosm** and **Minicosm** level sets by Aymeric du Peloux
 - **Original level set** by Thinking Rabbit
 - Tile graphics by [Kenney](https://kenney.nl) - Public domain - CCO license
+- **Geo** level set by Thegeode
