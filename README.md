@@ -1,6 +1,7 @@
 # sokoban_robo.koplugin
 
-A port of the Sokoban puzzle game (from 1981) for [KOReader](https://github.com/koreader/koreader).
+A port of the Sokoban puzzle game (from 1981) for [KOReader](https://github.com/koreader/koreader) with 4 new level sets and 30+ new levels.
+Original plugin: [sokoban.koplugin](https://github.com/kbarni/sokoban.koplugin)
 
 ## Sokoban_robo.koplugin
 3 new level sets,
@@ -114,7 +115,7 @@ python3 levels/convert.py levels/MySet.txt --author "Author Name"
 ```
 
 ## Credits
-
+- Original plugin: **https://github.com/kbarni/sokoban.koplugin**
 - Original game by **Hiroyuki Imabayashi** (Thinking Rabbit)
 - **Microban** and **Sasquatch** level sets by David W. Skinner - public domain
 - **Ultra Worlds** and **Depreciated** level sets by Robodiskjockey (Creator of this plugin fork)
