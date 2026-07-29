@@ -22,7 +22,8 @@ Comes with the following level sets:
 
 ![Screenshot](sokoban_screenshot.png)
 
-## Installation
+## Installation / Download
+You can download here: [sokoban_robo.koplugin.zip](https://github.com/user-attachments/files/30512642/sokoban_robo.koplugin.zip)
 1. Download the .zip
 2. Extract the .zip, it should come out as a folder
 3. Move the entire newly-extracted folder into '.adds/plugins'. The exact folder can vary from some instances:
