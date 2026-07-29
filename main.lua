@@ -90,7 +90,7 @@ end
 
 function Sokoban:addToMainMenu(menu_items)
     menu_items.sokoban = {
-        text          = _("Ultra Sokoban"),
+        text          = _("Sokoban"),
         sorting_hint  = "tools",
         callback      = function()
             self:_loadSettings()
