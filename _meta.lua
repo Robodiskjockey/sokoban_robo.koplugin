@@ -1,6 +1,6 @@
 local _ = require("gettext")
 return {
-    name = "sokoban",
-    fullname = _("Sokoban"),
-    description = _([[Sokoban puzzle game. Push boxes onto target squares.]]),
+    name = "sokoban_robo",
+    fullname = _("Sokoban 2: Robo"),
+    description = _([[Sokoban puzzle game. Push boxes onto target squares. NEW LEVELS BY ROBO]]),
 }
