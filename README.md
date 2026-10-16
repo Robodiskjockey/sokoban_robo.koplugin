@@ -1,5 +1,7 @@
 # sokoban_robo.koplugin
 
+Update(0.1)
+
 A port of the Sokoban puzzle game (from 1981) for [KOReader](https://github.com/koreader/koreader) with 4 new level sets and 30+ new levels.
 Original plugin: [sokoban.koplugin](https://github.com/kbarni/sokoban.koplugin)
 
